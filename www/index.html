@@ -536,18 +536,37 @@
   // ========== এই ফাংশনটি ঠিক করা হয়েছে ==========
   function sendCommand(cmd) {
     document.getElementById('cmdLog').textContent = cmd;
+    
+    console.log("=== SEND COMMAND DEBUG ===");
+    console.log("Command:", cmd);
+    console.log("BLE Connected:", window.bleConnected);
+    console.log("BLE Char exists:", window.bleChar ? "Yes" : "No");
+    
     if (window.bleChar && window.bleConnected) {
       try {
-        // গুরুত্বপূর্ণ: কমান্ডের সাথে New Line (\n) যোগ করুন
         const cmdWithNewLine = cmd + '\n';
+        console.log("Sending:", JSON.stringify(cmdWithNewLine));
+        console.log("Hex values:", [...cmdWithNewLine].map(c => c.charCodeAt(0)));
+        
         const encoder = new TextEncoder();
         const data = encoder.encode(cmdWithNewLine);
-        window.bleChar.writeValue(data);
-        console.log(`✓ Sent: "${cmdWithNewLine}"`);
+        
+        window.bleChar.writeValue(data)
+          .then(() => {
+            console.log("✓ Write successful!");
+            document.getElementById('cmdLog').textContent = cmd + " ✓";
+          })
+          .catch(err => {
+            console.error("✗ Write failed:", err);
+            document.getElementById('cmdLog').textContent = "Error: " + err.message;
+          });
       } catch(e) {
-        console.error('Send error:', e);
-        document.getElementById('cmdLog').textContent = 'Error';
+        console.error("Exception:", e);
+        document.getElementById('cmdLog').textContent = "Exception";
       }
+    } else {
+      console.log("✗ BLE not ready!");
+      document.getElementById('cmdLog').textContent = "Not connected";
     }
   }
   // =============================================
@@ -693,19 +712,50 @@
         filters: [{ namePrefix: 'HC' }],
         optionalServices: ['0000ffe0-0000-1000-8000-00805f9b34fb']
       });
+      
+      console.log("Device selected:", device.name);
       const server = await device.gatt.connect();
+      console.log("GATT connected");
+      
       const service = await server.getPrimaryService('0000ffe0-0000-1000-8000-00805f9b34fb');
-      const char = await service.getCharacteristic('0000ffe1-0000-1000-8000-00805f9b34fb');
-      window.bleChar = char; window.bleConnected = true; window.bleDevice = device;
+      console.log("Service found:", service.uuid);
+      
+      const characteristic = await service.getCharacteristic('0000ffe1-0000-1000-8000-00805f9b34fb');
+      console.log("Characteristic found:", characteristic.uuid);
+      console.log("Properties:", characteristic.properties);
+      
+      // characteristic writeable কিনা চেক করুন
+      if (!characteristic.properties.write) {
+        console.warn("Characteristic does not have write property!");
+        document.getElementById('cmdLog').textContent = "No write property";
+      }
+      
+      window.bleChar = characteristic;
+      window.bleConnected = true;
+      window.bleDevice = device;
+      
       document.getElementById('btPill').classList.add('connected');
       document.getElementById('btLbl').innerText = 'Connected';
       document.getElementById('cmdLog').textContent = 'Ready';
+      
+      // টেস্ট কমান্ড
+      setTimeout(() => {
+        console.log("Sending test command...");
+        sendCommand('S');
+      }, 500);
+      
       device.addEventListener('gattserverdisconnected', () => {
-        window.bleConnected = false; window.bleChar = null;
+        console.log("Device disconnected");
+        window.bleConnected = false;
+        window.bleChar = null;
         document.getElementById('btPill').classList.remove('connected');
         document.getElementById('btLbl').innerText = 'Connect';
       });
-    } catch(e) { document.getElementById('cmdLog').textContent = 'Failed'; }
+      
+    } catch(e) { 
+      console.error("Connection error:", e);
+      document.getElementById('cmdLog').textContent = 'Failed: ' + e.message;
+    }
   };
 
   attachRanges();
