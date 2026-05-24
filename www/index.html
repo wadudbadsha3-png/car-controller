@@ -188,7 +188,7 @@
       // const encoder = new TextEncoder();
       // const bytes = encoder.encode(commandWithNewLine);
       
-      await window.bleChar.writeValue(bytes);
+      await window.bleChar.writeValueWithoutResponse(bytes);
       console.log("✓ Sent successfully");
       
     } catch(e) {
