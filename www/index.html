@@ -1,501 +1,3 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <meta name="theme-color" content="#0a0f0d">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="RC Car">
-  <meta name="mobile-web-app-capable" content="yes">
-  
-  <!-- Lock to landscape -->
-  <meta name="screen-orientation" content="landscape">
-  <meta name="orientation" content="landscape">
-  
-  <title>RC Car Controller - Landscape</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/dist/tabler-icons.min.css">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* Force landscape orientation */
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      position: fixed;
-      background: #030706;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-
-    /* Landscape container */
-    .app-container {
-      width: 100%;
-      height: 100%;
-      background: #0a0f0d;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .screen {
-      width: 100%;
-      height: 100%;
-      padding: 8px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Compact topbar for landscape */
-    .topbar {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      flex-shrink: 0;
-    }
-
-    .tb-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #0d1f18;
-      border: 1px solid #1a3328;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #5dcaa5;
-      font-size: 16px;
-    }
-
-    .tb-btn:active {
-      background: #1d3d2e;
-      transform: scale(0.92);
-    }
-
-    .tb-btn.stop-btn {
-      color: #ff7a6e;
-      border-color: #541e1c;
-    }
-
-    .auto-btn {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 0 10px;
-      height: 36px;
-      border-radius: 40px;
-      background: #0d1f18;
-      border: 1px solid #1a3328;
-      color: #5dcaa5;
-      font-size: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .auto-btn.auto-on {
-      background: #136b4f;
-      border-color: #2dcc9e;
-      color: #f0fcf7;
-    }
-
-    .auto-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #5a6a64;
-    }
-
-    .stats-pill {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #0d1f18;
-      border: 1px solid #1a3328;
-      border-radius: 40px;
-      padding: 4px 10px;
-      color: #b5f0de;
-      font-size: 10px;
-      white-space: nowrap;
-    }
-
-    .bt-pill {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: #0d1f18;
-      border: 1px solid #1a3328;
-      border-radius: 40px;
-      padding: 4px 12px;
-      color: #5dcaa5;
-      font-size: 10px;
-      cursor: pointer;
-    }
-
-    .bt-pill.connected {
-      background: #0d604b;
-      color: #e2f9f0;
-      border-color: #2dbe8a;
-    }
-
-    .three-dot-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #0d1f18;
-      border: 1px solid #1a3328;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #5dcaa5;
-      font-size: 18px;
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      z-index: 20;
-    }
-
-    .dropdown {
-      position: absolute;
-      top: 50px;
-      right: 12px;
-      background: #0c1a15e6;
-      backdrop-filter: blur(16px);
-      border: 1px solid #2c7a61;
-      border-radius: 16px;
-      padding: 12px;
-      z-index: 30;
-      width: 260px;
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .dropdown.open {
-      display: flex;
-    }
-
-    .settings-section-title {
-      font-size: 9px;
-      font-weight: 700;
-      color: #37c99b;
-      text-transform: uppercase;
-      margin-bottom: 5px;
-    }
-
-    .srow {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 6px;
-    }
-
-    .slabel {
-      font-size: 10px;
-      color: #9be2ce;
-      width: 70px;
-    }
-
-    .srow input[type=range] {
-      flex: 1;
-      height: 3px;
-      -webkit-appearance: none;
-      background: #1a3328;
-      border-radius: 6px;
-    }
-
-    .srow input[type=range]::-webkit-slider-thumb {
-      width: 12px;
-      height: 12px;
-      background: #2ecb99;
-      border-radius: 50%;
-      cursor: pointer;
-      -webkit-appearance: none;
-    }
-
-    .sval {
-      font-size: 10px;
-      color: #dcfce8;
-      min-width: 30px;
-      text-align: right;
-    }
-
-    .sdivider {
-      height: 1px;
-      background: #204d3b;
-      margin: 5px 0;
-    }
-
-    /* Main landscape layout - side by side */
-    .main-zone {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex: 1;
-      gap: 12px;
-      min-height: 0;
-    }
-
-    .center-zone {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      flex: 1;
-    }
-
-    .log-strip {
-      background: #0d1f18;
-      border: 1px solid #205c46;
-      border-radius: 40px;
-      padding: 5px 12px;
-      font-size: 11px;
-      color: #bbf5e3;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .cmd-badge {
-      background: #2dbf8b;
-      color: #07261d;
-      font-size: 9px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 40px;
-    }
-
-    .combo-hint {
-      font-size: 8px;
-      color: #32ba8a;
-      text-align: center;
-      background: #0e1915;
-      padding: 5px 8px;
-      border-radius: 16px;
-      width: 100%;
-    }
-
-    .auto-status-box {
-      background: #093c5c;
-      border: 1px solid #2787c4;
-      border-radius: 12px;
-      padding: 6px 10px;
-      font-size: 9px;
-      color: #b9e2ff;
-      text-align: center;
-      display: none;
-    }
-
-    .auto-status-box.visible {
-      display: block;
-    }
-
-    /* Joysticks landscape optimized */
-    .joystick-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .joystick {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: #0b1f17;
-      border: 2px solid #299b77;
-      display: grid;
-      overflow: hidden;
-    }
-
-    .joystick.disabled {
-      border-color: #2b4a3b;
-      opacity: 0.45;
-      pointer-events: none;
-    }
-
-    .joystick.right-stick {
-      grid-template-columns: 1fr 1px 1fr;
-    }
-
-    .jbtn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #bbefdf;
-      font-size: 24px;
-      cursor: pointer;
-      background: #0b1f17;
-    }
-
-    .jbtn.jpressed {
-      background: #278f6d;
-      color: #042219;
-    }
-
-    .jbtn.jcombo {
-      background: #0e624b;
-      color: #daffef;
-    }
-
-    .jdivider-h, .jdivider-v {
-      background: #34bd8b;
-    }
-
-    .jdivider-h { height: 1px; width: 100%; }
-    .jdivider-v { width: 1px; height: 100%; }
-
-    .jlabel {
-      font-size: 9px;
-      color: #6fdbbb;
-      font-weight: 600;
-    }
-
-    .mode-indicator {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 40px;
-      background: #0e211b;
-      border: 1px solid #255e49;
-      color: #aee6d6;
-      text-align: center;
-    }
-
-    .mode-indicator.mode-f { background: #11538d; color: #e6f3ff; }
-    .mode-indicator.mode-b { background: #724c13; color: #ffe1b3; }
-
-    /* Landscape orientation fix */
-    @media (orientation: portrait) {
-      .orientation-warning {
-        display: flex;
-      }
-      .app-container {
-        display: none;
-      }
-    }
-
-    @media (orientation: landscape) {
-      .orientation-warning {
-        display: none;
-      }
-      .app-container {
-        display: flex;
-      }
-    }
-
-    .orientation-warning {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #000;
-      color: white;
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 20px;
-      text-align: center;
-      display: none;
-    }
-
-    /* Responsive for very small landscape screens */
-    @media (max-height: 400px) {
-      .joystick { width: 95px; height: 95px; }
-      .jbtn { font-size: 20px; }
-      .tb-btn { width: 30px; height: 30px; font-size: 14px; }
-      .auto-btn { height: 30px; font-size: 9px; padding: 0 8px; }
-      .stats-pill { padding: 3px 8px; font-size: 9px; }
-      .log-strip { padding: 3px 8px; font-size: 9px; }
-    }
-  </style>
-</head>
-<body>
-<div class="orientation-warning">
-  <i class="ti ti-rotate" style="font-size: 48px;"></i>
-  <div>Please rotate your phone to<br><strong style="color:#5dcaa5">Landscape Mode</strong></div>
-  <div style="font-size: 12px; color: #888;">↻ Turn your device sideways</div>
-</div>
-
-<div class="app-container">
-  <div class="screen">
-    <div class="topbar">
-      <div class="tb-btn" onclick="sendAux('L')"><i class="ti ti-bulb"></i></div>
-      <div class="tb-btn" onclick="sendAux('H')"><i class="ti ti-headlights"></i></div>
-      <div class="tb-btn" onclick="sendAux('P')"><i class="ti ti-parking"></i></div>
-      <div class="tb-btn" onclick="sendAux('W')"><i class="ti ti-alert-triangle"></i></div>
-      <div class="tb-btn stop-btn" onpointerdown="emergencyStop()"><i class="ti ti-player-stop"></i></div>
-      <div class="auto-btn" id="autoBtn" onclick="toggleAuto()"><div class="auto-dot"></div><i class="ti ti-robot"></i><span id="autoLbl">Auto</span></div>
-      <div class="stats-pill"><span><i class="ti ti-gas-station"></i>92%</span><span><i class="ti ti-gauge"></i><span id="spdMeter">0</span></span></div>
-      <div class="bt-pill" id="btPill" onclick="connectBLE()"><div class="bt-dot2"></div><i class="ti ti-bluetooth"></i><span id="btLbl">Connect</span></div>
-    </div>
-
-    <div class="three-dot-btn" id="threeDot" onclick="toggleMenu()"><i class="ti ti-dots-vertical"></i></div>
-
-    <div class="dropdown" id="settingsMenu">
-      <div><div class="settings-section-title"><i class="ti ti-dashboard"></i> Speed (0-255)</div>
-        <div class="srow"><span class="slabel">Forward</span><input type="range" min="0" max="255" value="200" id="fwdSpd"><span class="sval" id="fwdVal">200</span></div>
-        <div class="srow"><span class="slabel">Backward</span><input type="range" min="0" max="255" value="180" id="revSpd"><span class="sval" id="revVal">180</span></div>
-        <div class="srow"><span class="slabel">Zero turn</span><input type="range" min="0" max="255" value="90" id="ztSpd"><span class="sval" id="ztVal">90</span></div>
-        <div class="srow"><span class="slabel">Moving turn</span><input type="range" min="0" max="255" value="100" id="mtSpd"><span class="sval" id="mtVal">100</span></div>
-      </div>
-      <div class="sdivider"></div>
-      <div><div class="settings-section-title"><i class="ti ti-alert-triangle"></i> Obstacle</div>
-        <div class="srow"><span class="slabel">Stop dist</span><input type="range" min="5" max="100" value="45" id="obsDist"><span class="sval" id="obsLabel">45 cm</span></div>
-        <div class="srow"><span class="slabel">Debounce</span><input type="range" min="0" max="400" step="10" value="50" id="debounce"><span class="sval" id="debVal">50 ms</span></div>
-      </div>
-    </div>
-
-    <div class="main-zone">
-      <div class="joystick-wrap">
-        <div class="joystick" id="leftStick">
-          <div class="jbtn" id="btnF" onpointerdown="setThrottle('F')" onpointerup="releaseThrottle()" onpointerleave="releaseThrottle()"><i class="ti ti-chevron-up"></i></div>
-          <div class="jdivider-h"></div>
-          <div class="jbtn" id="btnB" onpointerdown="setThrottle('B')" onpointerup="releaseThrottle()" onpointerleave="releaseThrottle()"><i class="ti ti-chevron-down"></i></div>
-        </div>
-        <div class="mode-indicator" id="modeLabel">Neutral</div>
-      </div>
-
-      <div class="center-zone">
-        <div class="log-strip"><span class="cmd-badge">CMD</span><span id="cmdLog">Ready</span></div>
-        <div class="auto-status-box" id="autoBox"><i class="ti ti-robot"></i><br>Auto active</div>
-        <div class="combo-hint">🎮 F+L=G | F+R=H | B+L=I | B+R=J</div>
-      </div>
-
-      <div class="joystick-wrap">
-        <div class="joystick right-stick" id="rightStick">
-          <div class="jbtn" id="btnL" onpointerdown="setTurn('L')" onpointerup="releaseTurn()" onpointerleave="releaseTurn()"><i class="ti ti-chevron-left"></i></div>
-          <div class="jdivider-v"></div>
-          <div class="jbtn" id="btnR" onpointerdown="setTurn('R')" onpointerup="releaseTurn()" onpointerleave="releaseTurn()"><i class="ti ti-chevron-right"></i></div>
-        </div>
-        <div class="jlabel">STEERING</div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
   // BLE & Control Logic
   let bleDevice = null, bleChar = null, bleConnected = false;
@@ -533,18 +35,46 @@
     return 'S';
   }
 
-  function sendCommand(cmd) {
+  // উন্নত sendCommand ফাংশন - ডিবাগ সহ
+  async function sendCommand(cmd) {
     document.getElementById('cmdLog').textContent = cmd;
+    console.log(`Sending command: ${cmd}`); // ডিবাগ
+    
     if (window.bleChar && window.bleConnected) {
       try {
-        window.bleChar.writeValue(new TextEncoder().encode(cmd));
-      } catch(e) {}
+        // পদ্ধতি 1: String to ArrayBuffer
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(cmd);
+        
+        // পদ্ধতি 2: Uint8Array সরাসরি ব্যবহার করুন
+        const data = new Uint8Array([cmd.charCodeAt(0)]);
+        
+        console.log(`Sending bytes: ${Array.from(data)}`); // ডিবাগ
+        
+        await window.bleChar.writeValue(data);
+        console.log(`Command "${cmd}" sent successfully`); // সফল হলে দেখাবে
+      } catch(e) {
+        console.error('Write failed:', e);
+        document.getElementById('cmdLog').textContent = `Error: ${e.message}`;
+      }
+    } else {
+      console.log('BLE not connected, command ignored');
+      // বিকল্প: কমান্ড সংরক্ষণ করে পরে পাঠানো
     }
   }
 
   function startLoop() {
     if (sendInterval) clearInterval(sendInterval);
-    sendInterval = setInterval(() => { if (!autoMode) sendCommand(getCommand()); }, 120);
+    sendInterval = setInterval(() => { 
+      if (!autoMode) {
+        const cmd = getCommand();
+        if (cmd !== 'S' || (throttle || turn)) {
+          sendCommand(cmd);
+        } else if (cmd === 'S' && !throttle && !turn) {
+          sendCommand('S');
+        }
+      }
+    }, 100); // 100ms interval (120 এর বদলে)
   }
 
   function stopLoop() {
@@ -668,37 +198,102 @@
     btn.classList.toggle('open');
   };
 
+  // উন্নত BLE কানেকশন ফাংশন
   window.connectBLE = async function() {
     if (window.bleConnected && window.bleDevice) {
       if (window.bleDevice.gatt.connected) window.bleDevice.gatt.disconnect();
       window.bleConnected = false; window.bleChar = null;
       document.getElementById('btPill').classList.remove('connected');
       document.getElementById('btLbl').innerText = 'Connect';
+      document.getElementById('cmdLog').textContent = 'Disconnected';
       return;
     }
-    if (!navigator.bluetooth) { alert('Bluetooth not supported'); return; }
+    
+    if (!navigator.bluetooth) { 
+      alert('This browser does not support Web Bluetooth. Please use Chrome or Edge on Android.');
+      return;
+    }
+    
     try {
       document.getElementById('cmdLog').textContent = 'Scanning...';
+      console.log('Scanning for HC devices...');
+      
+      // HC-05/HC-06 ডিভাইস খুঁজুন
       const device = await navigator.bluetooth.requestDevice({
-        filters: [{ namePrefix: 'HC' }],
-        optionalServices: ['0000ffe0-0000-1000-8000-00805f9b34fb']
+        acceptAllDevices: false,
+        filters: [
+          { namePrefix: 'HC' },      // HC-05, HC-06
+          { namePrefix: 'JDY' },     // JDY-31
+          { namePrefix: 'BT' }       // কিছু HC মডেল BT দিয়ে শুরু
+        ],
+        optionalServices: [
+          '0000ffe0-0000-1000-8000-00805f9b34fb',  // HC-05 standard
+          '0000fff0-0000-1000-8000-00805f9b34fb'   // Alternative
+        ]
       });
+      
+      console.log('Device selected:', device.name);
+      document.getElementById('cmdLog').textContent = `Connecting to ${device.name}...`;
+      
       const server = await device.gatt.connect();
-      const service = await server.getPrimaryService('0000ffe0-0000-1000-8000-00805f9b34fb');
-      const char = await service.getCharacteristic('0000ffe1-0000-1000-8000-00805f9b34fb');
-      window.bleChar = char; window.bleConnected = true; window.bleDevice = device;
+      console.log('GATT connected');
+      
+      // প্রথমে সাধারণ সার্ভিস চেষ্টা করুন
+      let serviceUUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
+      let characteristicUUID = '0000ffe1-0000-1000-8000-00805f9b34fb';
+      
+      let service, characteristic;
+      
+      try {
+        service = await server.getPrimaryService(serviceUUID);
+        characteristic = await service.getCharacteristic(characteristicUUID);
+        console.log('Found standard HC-05 service/characteristic');
+      } catch(e) {
+        console.log('Standard UUID not found, trying alternative...');
+        // বিকল্প UUID চেষ্টা করুন
+        serviceUUID = '0000fff0-0000-1000-8000-00805f9b34fb';
+        characteristicUUID = '0000fff2-0000-1000-8000-00805f9b34fb';
+        service = await server.getPrimaryService(serviceUUID);
+        characteristic = await service.getCharacteristic(characteristicUUID);
+        console.log('Found alternative service/characteristic');
+      }
+      
+      window.bleChar = characteristic;
+      window.bleConnected = true;
+      window.bleDevice = device;
+      
       document.getElementById('btPill').classList.add('connected');
       document.getElementById('btLbl').innerText = 'Connected';
-      document.getElementById('cmdLog').textContent = 'Ready';
+      document.getElementById('cmdLog').textContent = 'Ready - Test with joystick!';
+      
+      // ডিসকানেক্ট হ্যান্ডলার
       device.addEventListener('gattserverdisconnected', () => {
-        window.bleConnected = false; window.bleChar = null;
+        console.log('Device disconnected');
+        window.bleConnected = false;
+        window.bleChar = null;
         document.getElementById('btPill').classList.remove('connected');
         document.getElementById('btLbl').innerText = 'Connect';
+        document.getElementById('cmdLog').textContent = 'Disconnected';
       });
-    } catch(e) { document.getElementById('cmdLog').textContent = 'Failed'; }
+      
+      // টেস্ট কমান্ড পাঠান
+      setTimeout(() => {
+        sendCommand('S');
+        console.log('Test stop command sent');
+      }, 500);
+      
+    } catch(e) {
+      console.error('BLE Error:', e);
+      document.getElementById('cmdLog').textContent = `Error: ${e.message}`;
+      alert(`Connection failed: ${e.message}\n\nMake sure:\n1. Bluetooth is ON\n2. HC-05 is powered\n3. No other app is connected`);
+    }
   };
 
   attachRanges();
+  
+  // পেজ লোড হলে স্টপ কমান্ড পাঠান
+  window.addEventListener('load', () => {
+    console.log('Page loaded, ready to connect');
+    document.getElementById('cmdLog').textContent = 'Click Connect';
+  });
 </script>
-</body>
-</html>
