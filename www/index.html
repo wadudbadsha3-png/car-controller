@@ -8,428 +8,61 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="RC Car">
   <meta name="mobile-web-app-capable" content="yes">
-  
-  <!-- Lock to landscape -->
   <meta name="screen-orientation" content="landscape">
   <meta name="orientation" content="landscape">
-  
-  <title>RC Car Controller - Landscape</title>
+  <title>RC Car Controller</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/dist/tabler-icons.min.css">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* Force landscape orientation */
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      position: fixed;
-      background: #030706;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-
-    /* Landscape container */
-    .app-container {
-      width: 100%;
-      height: 100%;
-      background: #0a0f0d;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .screen {
-      width: 100%;
-      height: 100%;
-      padding: 8px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Compact topbar for landscape */
-    .topbar {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      flex-shrink: 0;
-    }
-
-    .tb-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #0d1f18;
-      border: 1px solid #1a3328;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #5dcaa5;
-      font-size: 16px;
-    }
-
-    .tb-btn:active {
-      background: #1d3d2e;
-      transform: scale(0.92);
-    }
-
-    .tb-btn.stop-btn {
-      color: #ff7a6e;
-      border-color: #541e1c;
-    }
-
-    .auto-btn {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 0 10px;
-      height: 36px;
-      border-radius: 40px;
-      background: #0d1f18;
-      border: 1px solid #1a3328;
-      color: #5dcaa5;
-      font-size: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .auto-btn.auto-on {
-      background: #136b4f;
-      border-color: #2dcc9e;
-      color: #f0fcf7;
-    }
-
-    .auto-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #5a6a64;
-    }
-
-    .stats-pill {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #0d1f18;
-      border: 1px solid #1a3328;
-      border-radius: 40px;
-      padding: 4px 10px;
-      color: #b5f0de;
-      font-size: 10px;
-      white-space: nowrap;
-    }
-
-    .bt-pill {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: #0d1f18;
-      border: 1px solid #1a3328;
-      border-radius: 40px;
-      padding: 4px 12px;
-      color: #5dcaa5;
-      font-size: 10px;
-      cursor: pointer;
-    }
-
-    .bt-pill.connected {
-      background: #0d604b;
-      color: #e2f9f0;
-      border-color: #2dbe8a;
-    }
-
-    .three-dot-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #0d1f18;
-      border: 1px solid #1a3328;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #5dcaa5;
-      font-size: 18px;
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      z-index: 20;
-    }
-
-    .dropdown {
-      position: absolute;
-      top: 50px;
-      right: 12px;
-      background: #0c1a15e6;
-      backdrop-filter: blur(16px);
-      border: 1px solid #2c7a61;
-      border-radius: 16px;
-      padding: 12px;
-      z-index: 30;
-      width: 260px;
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .dropdown.open {
-      display: flex;
-    }
-
-    .settings-section-title {
-      font-size: 9px;
-      font-weight: 700;
-      color: #37c99b;
-      text-transform: uppercase;
-      margin-bottom: 5px;
-    }
-
-    .srow {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 6px;
-    }
-
-    .slabel {
-      font-size: 10px;
-      color: #9be2ce;
-      width: 70px;
-    }
-
-    .srow input[type=range] {
-      flex: 1;
-      height: 3px;
-      -webkit-appearance: none;
-      background: #1a3328;
-      border-radius: 6px;
-    }
-
-    .srow input[type=range]::-webkit-slider-thumb {
-      width: 12px;
-      height: 12px;
-      background: #2ecb99;
-      border-radius: 50%;
-      cursor: pointer;
-      -webkit-appearance: none;
-    }
-
-    .sval {
-      font-size: 10px;
-      color: #dcfce8;
-      min-width: 30px;
-      text-align: right;
-    }
-
-    .sdivider {
-      height: 1px;
-      background: #204d3b;
-      margin: 5px 0;
-    }
-
-    /* Main landscape layout - side by side */
-    .main-zone {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex: 1;
-      gap: 12px;
-      min-height: 0;
-    }
-
-    .center-zone {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      flex: 1;
-    }
-
-    .log-strip {
-      background: #0d1f18;
-      border: 1px solid #205c46;
-      border-radius: 40px;
-      padding: 5px 12px;
-      font-size: 11px;
-      color: #bbf5e3;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .cmd-badge {
-      background: #2dbf8b;
-      color: #07261d;
-      font-size: 9px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 40px;
-    }
-
-    .combo-hint {
-      font-size: 8px;
-      color: #32ba8a;
-      text-align: center;
-      background: #0e1915;
-      padding: 5px 8px;
-      border-radius: 16px;
-      width: 100%;
-    }
-
-    .auto-status-box {
-      background: #093c5c;
-      border: 1px solid #2787c4;
-      border-radius: 12px;
-      padding: 6px 10px;
-      font-size: 9px;
-      color: #b9e2ff;
-      text-align: center;
-      display: none;
-    }
-
-    .auto-status-box.visible {
-      display: block;
-    }
-
-    /* Joysticks landscape optimized */
-    .joystick-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .joystick {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: #0b1f17;
-      border: 2px solid #299b77;
-      display: grid;
-      overflow: hidden;
-    }
-
-    .joystick.disabled {
-      border-color: #2b4a3b;
-      opacity: 0.45;
-      pointer-events: none;
-    }
-
-    .joystick.right-stick {
-      grid-template-columns: 1fr 1px 1fr;
-    }
-
-    .jbtn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #bbefdf;
-      font-size: 24px;
-      cursor: pointer;
-      background: #0b1f17;
-    }
-
-    .jbtn.jpressed {
-      background: #278f6d;
-      color: #042219;
-    }
-
-    .jbtn.jcombo {
-      background: #0e624b;
-      color: #daffef;
-    }
-
-    .jdivider-h, .jdivider-v {
-      background: #34bd8b;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+    html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; position: fixed; background: #030706; }
+    body { display: flex; justify-content: center; align-items: center; font-family: system-ui, -apple-system, sans-serif; }
+    .app-container { width: 100%; height: 100%; background: #0a0f0d; display: flex; flex-direction: column; }
+    .screen { width: 100%; height: 100%; padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; position: relative; overflow: hidden; }
+    .topbar { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .tb-btn { width: 36px; height: 36px; border-radius: 50%; background: #0d1f18; border: 1px solid #1a3328; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5dcaa5; font-size: 16px; }
+    .tb-btn:active { background: #1d3d2e; transform: scale(0.92); }
+    .tb-btn.stop-btn { color: #ff7a6e; border-color: #541e1c; }
+    .auto-btn { display: flex; align-items: center; gap: 4px; padding: 0 10px; height: 36px; border-radius: 40px; background: #0d1f18; border: 1px solid #1a3328; color: #5dcaa5; font-size: 10px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .auto-btn.auto-on { background: #136b4f; border-color: #2dcc9e; color: #f0fcf7; }
+    .auto-dot { width: 6px; height: 6px; border-radius: 50%; background: #5a6a64; }
+    .stats-pill { margin-left: auto; display: flex; align-items: center; gap: 6px; background: #0d1f18; border: 1px solid #1a3328; border-radius: 40px; padding: 4px 10px; color: #b5f0de; font-size: 10px; white-space: nowrap; }
+    .bt-pill { display: flex; align-items: center; gap: 4px; background: #0d1f18; border: 1px solid #1a3328; border-radius: 40px; padding: 4px 12px; color: #5dcaa5; font-size: 10px; cursor: pointer; }
+    .bt-pill.connected { background: #0d604b; color: #e2f9f0; border-color: #2dbe8a; }
+    .three-dot-btn { width: 36px; height: 36px; border-radius: 50%; background: #0d1f18; border: 1px solid #1a3328; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5dcaa5; font-size: 18px; position: absolute; top: 8px; right: 12px; z-index: 20; }
+    .dropdown { position: absolute; top: 50px; right: 12px; background: #0c1a15e6; backdrop-filter: blur(16px); border: 1px solid #2c7a61; border-radius: 16px; padding: 12px; z-index: 30; width: 260px; display: none; flex-direction: column; gap: 10px; }
+    .dropdown.open { display: flex; }
+    .settings-section-title { font-size: 9px; font-weight: 700; color: #37c99b; text-transform: uppercase; margin-bottom: 5px; }
+    .srow { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .slabel { font-size: 10px; color: #9be2ce; width: 70px; }
+    .srow input[type=range] { flex: 1; height: 3px; -webkit-appearance: none; background: #1a3328; border-radius: 6px; }
+    .srow input[type=range]::-webkit-slider-thumb { width: 12px; height: 12px; background: #2ecb99; border-radius: 50%; cursor: pointer; -webkit-appearance: none; }
+    .sval { font-size: 10px; color: #dcfce8; min-width: 30px; text-align: right; }
+    .sdivider { height: 1px; background: #204d3b; margin: 5px 0; }
+    .main-zone { display: flex; align-items: center; justify-content: space-between; flex: 1; gap: 12px; min-height: 0; }
+    .center-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; flex: 1; }
+    .log-strip { background: #0d1f18; border: 1px solid #205c46; border-radius: 40px; padding: 5px 12px; font-size: 11px; color: #bbf5e3; display: flex; align-items: center; gap: 6px; }
+    .cmd-badge { background: #2dbf8b; color: #07261d; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 40px; }
+    .combo-hint { font-size: 8px; color: #32ba8a; text-align: center; background: #0e1915; padding: 5px 8px; border-radius: 16px; width: 100%; }
+    .auto-status-box { background: #093c5c; border: 1px solid #2787c4; border-radius: 12px; padding: 6px 10px; font-size: 9px; color: #b9e2ff; text-align: center; display: none; }
+    .auto-status-box.visible { display: block; }
+    .joystick-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .joystick { width: 120px; height: 120px; border-radius: 50%; background: #0b1f17; border: 2px solid #299b77; display: grid; overflow: hidden; }
+    .joystick.disabled { border-color: #2b4a3b; opacity: 0.45; pointer-events: none; }
+    .joystick.right-stick { grid-template-columns: 1fr 1px 1fr; }
+    .jbtn { display: flex; align-items: center; justify-content: center; color: #bbefdf; font-size: 24px; cursor: pointer; background: #0b1f17; }
+    .jbtn.jpressed { background: #278f6d; color: #042219; }
+    .jbtn.jcombo { background: #0e624b; color: #daffef; }
+    .jdivider-h, .jdivider-v { background: #34bd8b; }
     .jdivider-h { height: 1px; width: 100%; }
     .jdivider-v { width: 1px; height: 100%; }
-
-    .jlabel {
-      font-size: 9px;
-      color: #6fdbbb;
-      font-weight: 600;
-    }
-
-    .mode-indicator {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 40px;
-      background: #0e211b;
-      border: 1px solid #255e49;
-      color: #aee6d6;
-      text-align: center;
-    }
-
+    .jlabel { font-size: 9px; color: #6fdbbb; font-weight: 600; }
+    .mode-indicator { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 40px; background: #0e211b; border: 1px solid #255e49; color: #aee6d6; text-align: center; }
     .mode-indicator.mode-f { background: #11538d; color: #e6f3ff; }
     .mode-indicator.mode-b { background: #724c13; color: #ffe1b3; }
-
-    /* Landscape orientation fix */
-    @media (orientation: portrait) {
-      .orientation-warning {
-        display: flex;
-      }
-      .app-container {
-        display: none;
-      }
-    }
-
-    @media (orientation: landscape) {
-      .orientation-warning {
-        display: none;
-      }
-      .app-container {
-        display: flex;
-      }
-    }
-
-    .orientation-warning {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #000;
-      color: white;
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 20px;
-      text-align: center;
-      display: none;
-    }
-
-    /* Responsive for very small landscape screens */
-    @media (max-height: 400px) {
-      .joystick { width: 95px; height: 95px; }
-      .jbtn { font-size: 20px; }
-      .tb-btn { width: 30px; height: 30px; font-size: 14px; }
-      .auto-btn { height: 30px; font-size: 9px; padding: 0 8px; }
-      .stats-pill { padding: 3px 8px; font-size: 9px; }
-      .log-strip { padding: 3px 8px; font-size: 9px; }
-    }
+    @media (orientation: portrait) { .orientation-warning { display: flex; } .app-container { display: none; } }
+    @media (orientation: landscape) { .orientation-warning { display: none; } .app-container { display: flex; } }
+    .orientation-warning { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; color: white; z-index: 9999; align-items: center; justify-content: center; flex-direction: column; gap: 20px; text-align: center; display: none; }
+    @media (max-height: 400px) { .joystick { width: 95px; height: 95px; } .jbtn { font-size: 20px; } .tb-btn { width: 30px; height: 30px; font-size: 14px; } .auto-btn { height: 30px; font-size: 9px; padding: 0 8px; } .stats-pill { padding: 3px 8px; font-size: 9px; } .log-strip { padding: 3px 8px; font-size: 9px; } }
   </style>
 </head>
 <body>
@@ -449,7 +82,7 @@
       <div class="tb-btn stop-btn" onpointerdown="emergencyStop()"><i class="ti ti-player-stop"></i></div>
       <div class="auto-btn" id="autoBtn" onclick="toggleAuto()"><div class="auto-dot"></div><i class="ti ti-robot"></i><span id="autoLbl">Auto</span></div>
       <div class="stats-pill"><span><i class="ti ti-gas-station"></i>92%</span><span><i class="ti ti-gauge"></i><span id="spdMeter">0</span></span></div>
-      <div class="bt-pill" id="btPill" onclick="connectBLE()"><div class="bt-dot2"></div><i class="ti ti-bluetooth"></i><span id="btLbl">Connect</span></div>
+      <div class="bt-pill" id="btPill" onclick="connectBLE()"><i class="ti ti-bluetooth"></i><span id="btLbl">Connect</span></div>
     </div>
 
     <div class="three-dot-btn" id="threeDot" onclick="toggleMenu()"><i class="ti ti-dots-vertical"></i></div>
@@ -497,7 +130,6 @@
 </div>
 
 <script>
-  // BLE & Control Logic
   let bleDevice = null, bleChar = null, bleConnected = false;
   let throttle = null, turn = null, sendInterval = null;
   let autoMode = false, autoTimer = null, autoStepIdx = 0;
@@ -533,47 +165,42 @@
     return 'S';
   }
 
-  // ========== এই ফাংশনটি ঠিক করা হয়েছে ==========
-  function sendCommand(cmd) {
+  // ========== সম্পূর্ণ নতুন sendCommand ফাংশন ==========
+  async function sendCommand(cmd) {
     document.getElementById('cmdLog').textContent = cmd;
     
-    console.log("=== SEND COMMAND DEBUG ===");
-    console.log("Command:", cmd);
-    console.log("BLE Connected:", window.bleConnected);
-    console.log("BLE Char exists:", window.bleChar ? "Yes" : "No");
+    if (!window.bleChar || !window.bleConnected) {
+      console.log("Not connected");
+      return;
+    }
     
-    if (window.bleChar && window.bleConnected) {
-      try {
-        const cmdWithNewLine = cmd + '\n';
-        console.log("Sending:", JSON.stringify(cmdWithNewLine));
-        console.log("Hex values:", [...cmdWithNewLine].map(c => c.charCodeAt(0)));
-        
-        const encoder = new TextEncoder();
-        const data = encoder.encode(cmdWithNewLine);
-        
-        window.bleChar.writeValue(data)
-          .then(() => {
-            console.log("✓ Write successful!");
-            document.getElementById('cmdLog').textContent = cmd + " ✓";
-          })
-          .catch(err => {
-            console.error("✗ Write failed:", err);
-            document.getElementById('cmdLog').textContent = "Error: " + err.message;
-          });
-      } catch(e) {
-        console.error("Exception:", e);
-        document.getElementById('cmdLog').textContent = "Exception";
+    try {
+      // পদ্ধতি 1: Uint8Array সরাসরি ব্যবহার করুন
+      const commandWithNewLine = cmd + '\n';
+      const bytes = new Uint8Array(commandWithNewLine.length);
+      for (let i = 0; i < commandWithNewLine.length; i++) {
+        bytes[i] = commandWithNewLine.charCodeAt(i);
       }
-    } else {
-      console.log("✗ BLE not ready!");
-      document.getElementById('cmdLog').textContent = "Not connected";
+      
+      console.log(`Sending: "${commandWithNewLine}" as bytes: [${bytes}]`);
+      
+      // পদ্ধতি 2: TextEncoder (ব্যাকআপ)
+      // const encoder = new TextEncoder();
+      // const bytes = encoder.encode(commandWithNewLine);
+      
+      await window.bleChar.writeValue(bytes);
+      console.log("✓ Sent successfully");
+      
+    } catch(e) {
+      console.error("Send failed:", e);
+      document.getElementById('cmdLog').textContent = 'Err';
     }
   }
   // =============================================
 
   function startLoop() {
     if (sendInterval) clearInterval(sendInterval);
-    sendInterval = setInterval(() => { if (!autoMode) sendCommand(getCommand()); }, 120);
+    sendInterval = setInterval(() => { if (!autoMode) sendCommand(getCommand()); }, 100);
   }
 
   function stopLoop() {
@@ -712,23 +339,9 @@
         filters: [{ namePrefix: 'HC' }],
         optionalServices: ['0000ffe0-0000-1000-8000-00805f9b34fb']
       });
-      
-      console.log("Device selected:", device.name);
       const server = await device.gatt.connect();
-      console.log("GATT connected");
-      
       const service = await server.getPrimaryService('0000ffe0-0000-1000-8000-00805f9b34fb');
-      console.log("Service found:", service.uuid);
-      
       const characteristic = await service.getCharacteristic('0000ffe1-0000-1000-8000-00805f9b34fb');
-      console.log("Characteristic found:", characteristic.uuid);
-      console.log("Properties:", characteristic.properties);
-      
-      // characteristic writeable কিনা চেক করুন
-      if (!characteristic.properties.write) {
-        console.warn("Characteristic does not have write property!");
-        document.getElementById('cmdLog').textContent = "No write property";
-      }
       
       window.bleChar = characteristic;
       window.bleConnected = true;
@@ -738,23 +351,19 @@
       document.getElementById('btLbl').innerText = 'Connected';
       document.getElementById('cmdLog').textContent = 'Ready';
       
-      // টেস্ট কমান্ড
-      setTimeout(() => {
-        console.log("Sending test command...");
-        sendCommand('S');
-      }, 500);
-      
       device.addEventListener('gattserverdisconnected', () => {
-        console.log("Device disconnected");
         window.bleConnected = false;
         window.bleChar = null;
         document.getElementById('btPill').classList.remove('connected');
         document.getElementById('btLbl').innerText = 'Connect';
       });
       
+      // Test command
+      setTimeout(() => sendCommand('S'), 500);
+      
     } catch(e) { 
-      console.error("Connection error:", e);
-      document.getElementById('cmdLog').textContent = 'Failed: ' + e.message;
+      console.error(e);
+      document.getElementById('cmdLog').textContent = 'Failed';
     }
   };
 
